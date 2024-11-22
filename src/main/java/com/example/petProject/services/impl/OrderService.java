@@ -41,4 +41,9 @@ public class OrderService implements OrderServiceInterface {
         return orderRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
     }
+
+    @Override
+    public void changeOrdersStatus(UUID id) {
+        orderRepository.setValue(id);
+    }
 }

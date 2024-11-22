@@ -3,12 +3,11 @@ package com.example.petProject.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//todo
-// проверить, что все ограничения на параметры класса корректные
 @Entity
 @Table(name = "customers")
 @Data
@@ -21,30 +20,25 @@ public class Customer {
     @Column(name = "id")
     private Long id;
 
-    @NotNull()
-    @Column(name = "first_name", length = 50)
+    @Pattern(regexp ="^[А-Я][а-я]*$")
+    @Column(name = "first_name", length = 20)
     private String firstName;
 
-    @NotNull()
-    @Column(name = "last_name", length = 50)
+    @Pattern(regexp ="^[А-Я][а-я]*$")
+    @Column(name = "last_name", length = 20)
     private String lastName;
 
-    //todo
-    // стоит задать стандарт номера телефона
-    @NotNull()
-    @Column(name = "phone_number", length = 20)
+    @Pattern(regexp ="^[78][0-9]{10}$")
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    @NotNull()
+    @Pattern(regexp ="^[а-яА-Я0-9]+[а-яА-Я0-9\\-,\\.\\b]*$")
     @Column(name = "street", length = 30)
     private String street;
 
-    //todo
-    // номера домов могут быть дробными
-    @NotNull()
-    @Min(value = 1)
-    @Column(name = "house")
-    private int house;
+    @Pattern(regexp ="(^[1-9]+[0-9]*[а-я]?$)|(^[1-9]+[0-9]*\\/[1-9]+[0-9]*$)")
+    @Column(name = "house", length = 10)
+    private String house;
 
     @NotNull()
     @Min(value = 1)

@@ -4,9 +4,7 @@ import com.example.petProject.models.Product;
 import com.example.petProject.services.ProductServiceInterface;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,15 +42,5 @@ public class ProductController {
     {
         productService.saveProduct(product);
         return ResponseEntity.ok("The product has been created");
-    }
-
-    // ------------------------------------------------------------
-
-    //todo
-    // придумать, как вынести это в один файл
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex)
-    {
-        return new ResponseEntity<>("Incorrect data entered", HttpStatus.BAD_REQUEST);
     }
 }

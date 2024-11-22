@@ -4,9 +4,7 @@ import com.example.petProject.models.Customer;
 import com.example.petProject.services.CustomerServiceInterface;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,13 +43,4 @@ public class CustomerController {
         customerService.saveCustomer(customer);
         return ResponseEntity.ok("The customer has been created");
     }
-
-    // ------------------------------------------------------------
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex)
-    {
-        return new ResponseEntity<>("Incorrect data entered", HttpStatus.BAD_REQUEST);
-    }
-
 }

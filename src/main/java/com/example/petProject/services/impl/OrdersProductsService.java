@@ -42,4 +42,9 @@ public class OrdersProductsService implements OrdersProductsServiceInterface {
     public List<OrdersProducts> getAllProductsInOrderByOrdersId(UUID id) {
         return ordersProductsRepository.findAllByOrderId(id);
     }
+
+    @Override
+    public void changeProductQuantity(Long id, int quantity) {
+        ordersProductsRepository.setValue(id, quantity);
+    }
 }

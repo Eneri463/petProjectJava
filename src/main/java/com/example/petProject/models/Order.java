@@ -9,7 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 //todo
-// возможно, стоит написать сови методы hashCode и Equals
+// может, стоит сделать какой-то конструктор, который посчитает totalCost
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -30,7 +31,7 @@ public class Order {
     Set<OrdersProducts> orderList = new HashSet<>();
 
     @NotNull
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

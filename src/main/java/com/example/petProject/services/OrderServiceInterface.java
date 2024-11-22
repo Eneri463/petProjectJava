@@ -17,4 +17,6 @@ public interface OrderServiceInterface {
 
     Order getOrderById(UUID id);
 
+    void changeOrdersStatus(UUID id);
+
 }

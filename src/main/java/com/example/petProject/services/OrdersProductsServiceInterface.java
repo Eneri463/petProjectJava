@@ -15,4 +15,6 @@ public interface OrdersProductsServiceInterface {
     OrdersProducts getOrdersProductsById(Long id);
 
     List<OrdersProducts> getAllProductsInOrderByOrdersId(UUID id);
+
+    public void changeProductQuantity(Long id, int quantity);
 }

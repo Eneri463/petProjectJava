@@ -56,4 +56,9 @@ public class OrdersProducts {
     public int getQuantity() {
         return quantity;
     }
+
+    // ------------------------------------------------------------
+    //todo
+    // возможно, стоит написать свои методы hashCode и Equals
+
 }

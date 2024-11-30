@@ -2,9 +2,11 @@ package com.example.petProject.controllers;
 
 import com.example.petProject.models.Product;
 import com.example.petProject.services.ProductServiceInterface;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @EnableAutoConfiguration
+@Validated
 public class ProductController {
 
     private final ProductServiceInterface productService;
@@ -38,7 +41,7 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public ResponseEntity<String> createProduct(@RequestBody Product product)
+    public ResponseEntity<String> createProduct(@Valid @RequestBody Product product)
     {
         productService.saveProduct(product);
         return ResponseEntity.ok("The product has been created");

@@ -20,23 +20,28 @@ public class Customer {
     @Column(name = "id")
     private Long id;
 
-    @Pattern(regexp ="^[А-Я][а-я]*$")
+    @Pattern(regexp ="^[А-ЯЕЁ][а-яеё]*$")
+    @NotNull
     @Column(name = "first_name", length = 20)
     private String firstName;
 
-    @Pattern(regexp ="^[А-Я][а-я]*$")
+    @Pattern(regexp ="^[А-ЯЕЁ][а-яеё]*$")
+    @NotNull
     @Column(name = "last_name", length = 20)
     private String lastName;
 
     @Pattern(regexp ="^[78][0-9]{10}$")
+    @NotNull
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Pattern(regexp ="^[а-яА-Я0-9]+[а-яА-Я0-9\\-,\\.\\b]*$")
+    @Pattern(regexp ="^[а-яеёА-ЯЕЁ0-9]+[а-яеёА-ЯЕЁ0-9\\-\\.\b]*$")
+    @NotNull
     @Column(name = "street", length = 30)
     private String street;
 
-    @Pattern(regexp ="(^[1-9]+[0-9]*[а-я]?$)|(^[1-9]+[0-9]*\\/[1-9]+[0-9]*$)")
+    @Pattern(regexp ="(^[1-9]+[0-9]*[а-яеёА-ЯЕЁ]?$)|(^[1-9]+[0-9]*\\/[1-9]+[0-9]*$)")
+    @NotNull
     @Column(name = "house", length = 10)
     private String house;
 

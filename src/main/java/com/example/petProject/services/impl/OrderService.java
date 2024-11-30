@@ -1,6 +1,7 @@
 package com.example.petProject.services.impl;
 
 import com.example.petProject.models.Order;
+import com.example.petProject.models.projections.OrderProjection;
 import com.example.petProject.repositories.OrderRepository;
 import com.example.petProject.services.OrderServiceInterface;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,12 @@ public class OrderService implements OrderServiceInterface {
 
     private final OrderRepository orderRepository;
     @Override
-    public List<Order> findAllOrders() {
-        return orderRepository.findAll();
+    public List<OrderProjection> findAllOrders() {
+        return orderRepository.findAllOrder();
     }
 
     @Override
-    public List<Order> findOrdersByUserId(Long id) {
+    public List<OrderProjection> findOrdersByUserId(Long id) {
         return orderRepository.findByUserId(id);
     }
 
@@ -37,7 +38,20 @@ public class OrderService implements OrderServiceInterface {
     }
 
     @Override
+    public OrderProjection getOrderProjectionById(UUID id){
+
+        List<OrderProjection> res = orderRepository.findViewById(id);
+
+        if (res.size() != 0)
+        {
+            return res.get(0);
+        }
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+    }
+
+    @Override
     public Order getOrderById(UUID id) {
+
         return orderRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
     }

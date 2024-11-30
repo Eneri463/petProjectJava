@@ -1,4 +1,5 @@
-package com.example.petProject.models.bodies;
+package com.example.petProject.models.requestBodies;
+
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

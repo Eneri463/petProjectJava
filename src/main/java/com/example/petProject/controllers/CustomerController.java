@@ -2,6 +2,7 @@ package com.example.petProject.controllers;
 
 import com.example.petProject.models.Customer;
 import com.example.petProject.services.CustomerServiceInterface;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class CustomerController {
     }
 
     @PostMapping("/customer")
-    public ResponseEntity<String> createCustomer(@RequestBody Customer customer)
+    public ResponseEntity<String> createCustomer(@Valid @RequestBody Customer customer)
     {
         customerService.saveCustomer(customer);
         return ResponseEntity.ok("The customer has been created");

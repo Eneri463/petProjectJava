@@ -1,5 +1,6 @@
-package com.example.petProject.models.bodies;
+package com.example.petProject.models.requestBodies;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +16,8 @@ public class OrderList {
     @NotNull
     private Long userId;
     @NotNull
+    @Valid
     private List<ProductInformation> products;
+
+
 }

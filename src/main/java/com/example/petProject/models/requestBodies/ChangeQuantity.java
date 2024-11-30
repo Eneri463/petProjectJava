@@ -1,4 +1,4 @@
-package com.example.petProject.models.bodies;
+package com.example.petProject.models.requestBodies;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangeQuantityRequestBody{
+public class ChangeQuantity {
     @NotNull
     private UUID orderId;
     @NotNull

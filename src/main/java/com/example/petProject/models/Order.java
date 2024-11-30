@@ -27,7 +27,7 @@ public class Order {
     @Column(name = "order_time")
     private LocalDateTime date;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     Set<OrdersProducts> orderList = new HashSet<>();
 
     @NotNull
@@ -101,5 +101,6 @@ public class Order {
     public void removeProduct(OrdersProducts partOfOrder) {
         orderList.remove(partOfOrder);
     }
+
 
 }

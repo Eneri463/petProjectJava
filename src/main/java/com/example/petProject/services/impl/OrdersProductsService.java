@@ -1,6 +1,7 @@
 package com.example.petProject.services.impl;
 
 import com.example.petProject.models.OrdersProducts;
+import com.example.petProject.models.compositeKeys.OrdersProductsId;
 import com.example.petProject.repositories.OrdersProductsRepository;
 import com.example.petProject.services.OrdersProductsServiceInterface;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,12 @@ public class OrdersProductsService implements OrdersProductsServiceInterface {
     }
 
     @Override
-    public void deleteOrdersProducts(Long id) {
+    public void deleteOrdersProducts(OrdersProductsId id) {
         ordersProductsRepository.deleteById(id);
     }
 
     @Override
-    public OrdersProducts getOrdersProductsById(Long id) {
+    public OrdersProducts getOrdersProductsById(OrdersProductsId id) {
         return ordersProductsRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "The entity was not found in the orders"));
     }
@@ -44,7 +45,7 @@ public class OrdersProductsService implements OrdersProductsServiceInterface {
     }
 
     @Override
-    public void changeProductQuantity(Long id, int quantity) {
+    public void changeProductQuantity(OrdersProductsId id, int quantity) {
         ordersProductsRepository.setValue(id, quantity);
     }
 }

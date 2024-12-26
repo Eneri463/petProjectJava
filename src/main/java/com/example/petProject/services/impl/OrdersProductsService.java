@@ -1,10 +1,14 @@
 package com.example.petProject.services.impl;
 
+import com.example.petProject.models.Customer;
 import com.example.petProject.models.OrdersProducts;
 import com.example.petProject.models.compositeKeys.OrdersProductsId;
 import com.example.petProject.repositories.OrdersProductsRepository;
 import com.example.petProject.services.OrdersProductsServiceInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,13 +23,18 @@ public class OrdersProductsService implements OrdersProductsServiceInterface {
     private final OrdersProductsRepository ordersProductsRepository;
 
     @Override
-    public List<OrdersProducts> findAllProducts() {
-        return ordersProductsRepository.findAll();
+    public List<OrdersProducts> findAllProductsInOrder(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<OrdersProducts> productsInOrders = ordersProductsRepository.findAll(pageable);
+        List<OrdersProducts> listOfProducts = productsInOrders.getContent();
+
+        return listOfProducts;
     }
 
     @Override
-    public void saveOrdersProducts(OrdersProducts ordersProduct) {
-        ordersProductsRepository.save(ordersProduct);
+    public OrdersProducts saveOrdersProducts(OrdersProducts ordersProduct) {
+        return ordersProductsRepository.save(ordersProduct);
     }
 
     @Override

@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ProductServiceInterface {
 
-    List<Product> findAllProducts();
+    List<Product> findAllProducts(int pageNo, int pageSize);
 
-    void saveProduct(Product product);
+    Product saveProduct(Product product);
 
     void deleteProduct(Long id);
 

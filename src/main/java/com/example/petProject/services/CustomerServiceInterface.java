@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface CustomerServiceInterface {
 
-    List<Customer> findAllCustomers();
+    List<Customer> getAllCustomers(int pageNo, int pageSize);
 
-    void saveCustomer(Customer customer);
+    Customer saveCustomer(Customer customer);
 
     void deleteCustomer(Long id);
 

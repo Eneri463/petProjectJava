@@ -1,6 +1,8 @@
-package com.example.petProject.models.projections;
+package com.example.petProject.projections;
 
 import com.example.petProject.models.Customer;
+import com.example.petProject.models.Product;
+
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,18 +13,10 @@ public interface OrderProjection {
 
     Set<OrdersProductsProjection> getOrderList();
 
-    Customer getCustomer();
-
     interface OrdersProductsProjection
     {
-        ProductProjection getProduct();
-
-        interface ProductProjection
-        {
-            Long getId();
-            String getName();
-            Double getPrice();
-        }
+        Product getProduct();
     }
 
+    Customer getCustomer();
 }

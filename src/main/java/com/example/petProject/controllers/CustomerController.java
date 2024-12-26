@@ -3,8 +3,10 @@ package com.example.petProject.controllers;
 import com.example.petProject.models.Customer;
 import com.example.petProject.services.CustomerServiceInterface;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,28 +22,31 @@ public class CustomerController {
     // ------------------------------------------------------------
 
     @GetMapping("/customers")
-    public List<Customer> allCustomers()
+    @Valid
+    public ResponseEntity<List<Customer>> allCustomers(
+            @RequestParam(value = "pageNo", defaultValue = "1", required = false) @Min(1) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) @Min(1) int pageSize
+    )
     {
-        return customerService.findAllCustomers();
+        return ResponseEntity.ok(customerService.getAllCustomers(pageNo-1, pageSize));
     }
 
     @GetMapping("/customer/{id}")
-    public Customer findCustomerById(@PathVariable Long id)
+    public ResponseEntity<Customer> findCustomerById(@PathVariable Long id)
     {
-        return customerService.getCustomerById(id);
+        return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
-    @DeleteMapping("/customer")
+    @DeleteMapping("/customer/delete")
     public ResponseEntity<String> deleteCustomer(@RequestParam Long id)
     {
         customerService.deleteCustomer(id);
         return ResponseEntity.ok("The customer has been removed");
     }
 
-    @PostMapping("/customer")
-    public ResponseEntity<String> createCustomer(@Valid @RequestBody Customer customer)
+    @PostMapping("/customer/create")
+    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer)
     {
-        customerService.saveCustomer(customer);
-        return ResponseEntity.ok("The customer has been created");
+        return new ResponseEntity<>(customerService.saveCustomer(customer), HttpStatus.CREATED);
     }
 }

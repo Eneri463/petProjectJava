@@ -18,16 +18,17 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Min(1)
     private Long id;
 
-    @Pattern(regexp ="^[А-ЯЕЁ][а-яеё]*$")
+    @Pattern(regexp ="^[А-ЯЕЁ][а-яеё]{0,19}$")
     @NotNull
-    @Column(name = "first_name", length = 20)
+    @Column(name = "first_name")
     private String firstName;
 
-    @Pattern(regexp ="^[А-ЯЕЁ][а-яеё]*$")
+    @Pattern(regexp ="^[А-ЯЕЁ][а-яеё]{0,19}$")
     @NotNull
-    @Column(name = "last_name", length = 20)
+    @Column(name = "last_name")
     private String lastName;
 
     @Pattern(regexp ="^[78][0-9]{10}$")
@@ -35,14 +36,14 @@ public class Customer {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Pattern(regexp ="^[а-яеёА-ЯЕЁ0-9]+[а-яеёА-ЯЕЁ0-9\\-\\.\b]*$")
+    @Pattern(regexp ="^[а-яеёА-ЯЕЁ0-9][а-яеёА-ЯЕЁ0-9\\-\\.\b]{0,29}$")
     @NotNull
     @Column(name = "street", length = 30)
     private String street;
 
-    @Pattern(regexp ="(^[1-9]+[0-9]*[а-яеёА-ЯЕЁ]?$)|(^[1-9]+[0-9]*\\/[1-9]+[0-9]*$)")
+    @Pattern(regexp ="(^[1-9][0-9]{0,4}[а-яеёА-ЯЕЁ]?$)|(^[1-9][0-9]{0,4}\\/[1-9][0-9]{0,4}$)")
     @NotNull
-    @Column(name = "house", length = 10)
+    @Column(name = "house")
     private String house;
 
     @NotNull()
@@ -50,4 +51,14 @@ public class Customer {
     @Column(name = "apartment")
     private int apartment;
 
+
+    public Customer(String firstName, String lastName, String phoneNumber,String street, String house,int apartment)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.street = street;
+        this.house = house;
+        this.apartment = apartment;
+    }
 }

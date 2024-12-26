@@ -1,14 +1,16 @@
 package com.example.petProject.services.impl;
 
+import com.example.petProject.dto.OrderDTO;
 import com.example.petProject.models.Order;
-import com.example.petProject.models.projections.OrderProjection;
 import com.example.petProject.repositories.OrderRepository;
 import com.example.petProject.services.OrderServiceInterface;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,18 +20,34 @@ public class OrderService implements OrderServiceInterface {
 
     private final OrderRepository orderRepository;
     @Override
-    public List<OrderProjection> findAllOrders() {
-        return orderRepository.findAllOrder();
+    public List<OrderDTO> findAllOrders(int pageNo, int pageSize) {
+
+        List<OrderDTO> listOfOrders = new ArrayList<>();
+
+        for (Order order : orderRepository.findAllOrderIn(pageNo*pageSize,pageSize))
+        {
+            listOfOrders.add(order.orderToOrderDTO());
+        }
+
+        return listOfOrders;
     }
 
     @Override
-    public List<OrderProjection> findOrdersByUserId(Long id) {
-        return orderRepository.findByUserId(id);
+    public List<OrderDTO> findOrdersByUserId(Long id, int pageNo, int pageSize) {
+
+        List<OrderDTO> listOfOrders = new ArrayList<>();
+
+        for (Order order : orderRepository.findByUserId(id, pageNo*pageSize,pageSize))
+        {
+            listOfOrders.add(order.orderToOrderDTO());
+        }
+
+        return listOfOrders;
     }
 
     @Override
-    public void saveOrder(Order order) {
-        orderRepository.save(order);
+    public OrderDTO saveOrder(Order order) {
+        return orderRepository.save(order).orderToOrderDTO();
     }
 
     @Override
@@ -38,15 +56,14 @@ public class OrderService implements OrderServiceInterface {
     }
 
     @Override
-    public OrderProjection getOrderProjectionById(UUID id){
+    public OrderDTO getOrderDTOById(UUID id){
 
-        List<OrderProjection> res = orderRepository.findViewById(id);
+        List<Order> order =  orderRepository.getByIdNotProxy(id);
 
-        if (res.size() != 0)
-        {
-            return res.get(0);
-        }
+        if (order.size() == 0)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+
+        return order.get(0).orderToOrderDTO();
     }
 
     @Override
@@ -60,4 +77,5 @@ public class OrderService implements OrderServiceInterface {
     public void changeOrdersStatus(UUID id) {
         orderRepository.setValue(id);
     }
+
 }

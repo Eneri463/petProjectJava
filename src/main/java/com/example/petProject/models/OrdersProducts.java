@@ -18,7 +18,7 @@ public class OrdersProducts {
     @EmbeddedId
     OrdersProductsId id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @MapsId("productId")
     @NotNull
@@ -43,6 +43,7 @@ public class OrdersProducts {
         this.order = order;
         this.product = product;
         this.quantity = quantity;
+        if (order == null || product == null) return;
         this.id = new OrdersProductsId(product.getId(), order.getId());
     }
 
@@ -57,9 +58,7 @@ public class OrdersProducts {
         return product;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
+    public int getQuantity() {return  quantity;}
 
     @Override
     public int hashCode() {

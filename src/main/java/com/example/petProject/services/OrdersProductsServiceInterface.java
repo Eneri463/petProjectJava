@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface OrdersProductsServiceInterface {
-    List<OrdersProducts> findAllProducts();
+    List<OrdersProducts> findAllProductsInOrder(int pageNo, int pageSize);
 
-    void saveOrdersProducts(OrdersProducts ordersProduct);
+    OrdersProducts saveOrdersProducts(OrdersProducts ordersProduct);
 
     void deleteOrdersProducts(OrdersProductsId id);
 
@@ -17,5 +17,5 @@ public interface OrdersProductsServiceInterface {
 
     List<OrdersProducts> getAllProductsInOrderByOrdersId(UUID id);
 
-    public void changeProductQuantity(OrdersProductsId id, int quantity);
+    void changeProductQuantity(OrdersProductsId id, int quantity);
 }

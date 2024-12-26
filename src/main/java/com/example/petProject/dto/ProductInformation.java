@@ -1,4 +1,4 @@
-package com.example.petProject.models.requestBodies;
+package com.example.petProject.dto;
 
 
 import jakarta.validation.constraints.Min;
@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductInformation {
     @NotNull
+    @Min(1)
     private Long productId;
     @NotNull
     @Min(1)

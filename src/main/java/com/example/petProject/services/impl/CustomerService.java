@@ -4,6 +4,10 @@ import com.example.petProject.models.Customer;
 import com.example.petProject.repositories.CustomerRepository;
 import com.example.petProject.services.CustomerServiceInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,16 +18,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerService implements CustomerServiceInterface {
 
+    @Autowired
     private final CustomerRepository customerRepository;
 
     @Override
-    public List<Customer> findAllCustomers() {
-        return customerRepository.findAll();
+    public List<Customer> getAllCustomers(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Customer> customers = customerRepository.findAll(pageable);
+        List<Customer> listOfCustomers = customers.getContent();
+
+        return listOfCustomers;
     }
 
     @Override
-    public void saveCustomer(Customer customer) {
-        customerRepository.save(customer);
+    public Customer saveCustomer(Customer customer) {
+        return customerRepository.save(customer);
     }
 
     @Override

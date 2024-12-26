@@ -1,18 +1,19 @@
 package com.example.petProject.models;
 
+import com.example.petProject.dto.OrderDTO;
+import com.example.petProject.dto.ProductInListDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Setter;
 
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-//todo
-// может, стоит сделать какой-то конструктор, который посчитает totalCost
-
 @Entity
 @Table(name = "orders")
+@Setter
 public class Order {
 
     @Id
@@ -27,7 +28,7 @@ public class Order {
     @Column(name = "order_time")
     private LocalDateTime date;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<OrdersProducts> orderList = new HashSet<>();
 
     @NotNull
@@ -57,22 +58,6 @@ public class Order {
     }
 
     // ------------------------------------------------------------
-    // сеттеры
-
-    public void setCustomerId(Customer customer) {
-        this.customer = customer;
-    }
-
-    public void setOrderList(Set<OrdersProducts> orderList) {
-        this.orderList = orderList;
-    }
-
-    public void setStatus(boolean status)
-    {
-        this.status = status;
-    }
-
-    // ------------------------------------------------------------
     // геттеры
 
     public String getDate() {
@@ -92,6 +77,12 @@ public class Order {
         return customer;
     }
 
+    public boolean getStatus()
+    {
+        return status;
+    }
+
+
     // ------------------------------------------------------------
     public void addProduct(Product product, int quantity) {
         OrdersProducts productInList = new OrdersProducts(this, product, quantity);
@@ -102,5 +93,24 @@ public class Order {
         orderList.remove(partOfOrder);
     }
 
+    // ------------------------------------------------------------
+    public OrderDTO orderToOrderDTO()
+    {
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setId(this.id);
+        orderDTO.setDate(this.getDate());
 
+        Set<ProductInListDTO> products = new HashSet<ProductInListDTO>();
+
+        for(OrdersProducts part : this.orderList)
+        {
+            Product product = part.getProduct();
+            products.add(new ProductInListDTO(product.getId(), product.getName(), part.getQuantity()));
+        }
+
+        orderDTO.setOrderList(products);
+        orderDTO.setCustomer(this.customer);
+
+        return orderDTO;
+    }
 }

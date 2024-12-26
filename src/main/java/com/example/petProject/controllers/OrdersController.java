@@ -1,24 +1,25 @@
 package com.example.petProject.controllers;
 
+import com.example.petProject.dto.OrderDTO;
 import com.example.petProject.models.Customer;
 import com.example.petProject.models.Order;
 import com.example.petProject.models.OrdersProducts;
 import com.example.petProject.models.Product;
-import com.example.petProject.models.requestBodies.ChangeQuantity;
-import com.example.petProject.models.requestBodies.OrderList;
-import com.example.petProject.models.requestBodies.ProductInformation;
+import com.example.petProject.dto.ChangeQuantity;
+import com.example.petProject.dto.OrderList;
+import com.example.petProject.dto.ProductInformation;
 import com.example.petProject.models.compositeKeys.OrdersProductsId;
-import com.example.petProject.models.projections.OrderProjection;
 import com.example.petProject.services.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -34,54 +35,59 @@ public class OrdersController {
 
     // получение всех невыполненных заказов
     @GetMapping("/orders")
-    public List<OrderProjection> allOrders()
+    @Valid
+    public ResponseEntity<List<OrderDTO>> allOrders(
+            @RequestParam(value = "pageNo", defaultValue = "1", required = false) @Min(1) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) @Min(1) int pageSize
+    )
     {
-        return orderService.findAllOrders();
+        return ResponseEntity.ok(orderService.findAllOrders(pageNo-1, pageSize));
     }
 
     // получение заказа с указанным id
     @GetMapping("/order")
-    public OrderProjection findOrderById(@RequestParam UUID id)
+    public ResponseEntity<OrderDTO> findOrderById(@RequestParam UUID id)
     {
-        OrderProjection res = orderService.getOrderProjectionById(id);
-        return res;
+        return new ResponseEntity<>(orderService.getOrderDTOById(id), HttpStatus.OK);
     }
 
     // получение всех невыполненных заказов пользователя с указанным userId
-    @GetMapping("/order/user/{id}")
-    public List<OrderProjection> findOrderByUserId(@PathVariable Long id)
+    @GetMapping("/order/customer/{id}")
+    @Valid
+    public ResponseEntity<List<OrderDTO>> findOrderByUserId(
+            @PathVariable Long id,
+            @RequestParam(value = "pageNo", defaultValue = "1", required = false) @Min(1) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) @Min(1) int pageSize
+    )
     {
-       return orderService.findOrdersByUserId(id);
+        return ResponseEntity.ok(orderService.findOrdersByUserId(id, pageNo-1, pageSize));
     }
 
+
     // создание заказа
-    @PostMapping("/order")
-    public ResponseEntity<String> createOrder(@Valid @RequestBody OrderList request)
+    @PostMapping("/order/create")
+    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody OrderList request)
     {
         if (request.getProducts().size() == 0)
         {
-            return new ResponseEntity<>("The order should not be empty", HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The order should not be empty");
         }
 
         Customer customer = customerService.getCustomerById(request.getUserId());
 
         Order order = new Order(customer);
 
-        //todo
-        // что будет, если добавить заказ с одним товаром дважды
         for (ProductInformation item : request.getProducts())
         {
             Product newProduct = productService.getProductById(item.getProductId());
             order.addProduct(newProduct, item.getQuantity());
         }
 
-        orderService.saveOrder(order);
-
-        return ResponseEntity.ok("The order has been created");
+        return new ResponseEntity<>(orderService.saveOrder(order), HttpStatus.CREATED);
     }
 
     // удаление заказа по его id
-    @DeleteMapping("/order")
+    @DeleteMapping("/order/delete")
     public ResponseEntity<String> deleteOrder(@RequestParam UUID id)
     {
         orderService.deleteOrder(id);
@@ -89,34 +95,8 @@ public class OrdersController {
     }
 
     // удаление продукта из заказа
-    @DeleteMapping("order/product1")
-    public ResponseEntity<String> deleteProductFromOrder1(@RequestParam UUID orderId, @RequestParam Long productId)
-    {
-        Order order = orderService.getOrderById(orderId);
-
-        Set<OrdersProducts> list = order.getOrderList();
-
-        for(OrdersProducts ordersPart: list)
-        {
-            if (ordersPart.getProduct().getId() == productId)
-            {
-                ordersPart.setOrder(null);
-                order.removeProduct(ordersPart);
-            }
-        }
-
-        if (order.getOrderList().size() == 0)
-        {
-            orderService.deleteOrder(orderId);
-            return ResponseEntity.ok("The order has been removed");
-        }
-
-        return ResponseEntity.ok("The order has been updated");
-    }
-
-    // удаление продукта из заказа
-    @DeleteMapping("order/product2")
-    public ResponseEntity<String> deleteProductFromOrder2(@RequestParam UUID orderId, @RequestParam Long productId)
+    @DeleteMapping("/order/product/delete")
+    public ResponseEntity<String> deleteProductFromOrder(@RequestParam UUID orderId, @RequestParam Long productId)
     {
         OrdersProducts partOfOrder = ordersProductsService.getOrdersProductsById(new OrdersProductsId(productId, orderId));
 
@@ -130,11 +110,13 @@ public class OrdersController {
             return ResponseEntity.ok("The order has been removed");
         }
 
+        orderService.saveOrder(order);
+
         return ResponseEntity.ok("The order has been updated");
     }
 
     // отметить заказ как завершенный
-    @PutMapping("order/status")
+    @PutMapping("/order/status/update")
     public ResponseEntity<String> changeOrderStatus(@RequestParam UUID id)
     {
         orderService.changeOrdersStatus(id);
@@ -142,7 +124,7 @@ public class OrdersController {
     }
 
     // редактирование количества продуктов в заказе
-    @PutMapping("order/product")
+    @PutMapping("/order/product/update")
     public ResponseEntity<String> updateOrder(@Valid @RequestBody ChangeQuantity requestBody)
     {
 

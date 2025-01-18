@@ -38,7 +38,7 @@ public class Customer {
 
     @Pattern(regexp ="^[а-яеёА-ЯЕЁ0-9][а-яеёА-ЯЕЁ0-9\\-\\.\b]{0,29}$")
     @NotNull
-    @Column(name = "street", length = 30)
+    @Column(name = "street")
     private String street;
 
     @Pattern(regexp ="(^[1-9][0-9]{0,4}[а-яеёА-ЯЕЁ]?$)|(^[1-9][0-9]{0,4}\\/[1-9][0-9]{0,4}$)")

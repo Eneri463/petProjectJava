@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc(printOnlyOnFailure = false)
+@AutoConfigureMockMvc(addFilters=false)
 @TestInstance(TestInstance. Lifecycle.PER_CLASS)
 @TestPropertySource("/application-test.properties")
 class ProductControllerTestIT {

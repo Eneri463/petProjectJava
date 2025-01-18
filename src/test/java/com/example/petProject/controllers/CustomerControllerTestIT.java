@@ -21,7 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc(printOnlyOnFailure = false)
+@AutoConfigureMockMvc(addFilters=false)
 @TestPropertySource("/application-test.properties")
 @TestInstance(TestInstance. Lifecycle.PER_CLASS)
 class CustomerControllerTestIT {

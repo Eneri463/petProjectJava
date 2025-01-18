@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerService implements CustomerServiceInterface {
 
-    @Autowired
     private final CustomerRepository customerRepository;
 
     @Override

@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,6 +35,7 @@ public class OrdersController {
     // ------------------------------------------------------------
 
     // получение всех невыполненных заказов
+    @PreAuthorize("hasAuthority('JWT_ACCESS')")
     @GetMapping("/orders")
     @Valid
     public ResponseEntity<List<OrderDTO>> allOrders(
@@ -44,7 +46,9 @@ public class OrdersController {
         return ResponseEntity.ok(orderService.findAllOrders(pageNo-1, pageSize));
     }
 
+
     // получение заказа с указанным id
+    @PreAuthorize("hasAuthority('JWT_ACCESS')")
     @GetMapping("/order")
     public ResponseEntity<OrderDTO> findOrderById(@RequestParam UUID id)
     {

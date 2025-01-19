@@ -34,6 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private Collection<GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
+
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
 
@@ -46,6 +47,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public boolean ifUserExists(String username)
     {
         return userRepository.existsByUsername(username);
+    }
+
+
+    public UserEntity loadUser(String username) throws UsernameNotFoundException {
+
+        return userRepository.findByUsername(username).orElse(null);
+
     }
 
 }

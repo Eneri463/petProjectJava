@@ -11,13 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class TokenGenerator {
@@ -47,12 +49,15 @@ public class TokenGenerator {
         Instant currentDate = Instant.now();
         Instant expireDate = currentDate.plus(accessTokenTtl);
 
+        var authorities = new LinkedList<String>();
+        authorities.add("JWT_ACCESS");
+
         String token = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(Date.from(currentDate))
                 .setExpiration(Date.from(expireDate))
                 .signWith(jwtAccessSecret , SignatureAlgorithm.HS512)
-                .claim("roles", authentication.getAuthorities())
+                .claim("authorities", authorities)
                 .compact();
 
         return token;
@@ -73,7 +78,7 @@ public class TokenGenerator {
                 .setIssuedAt(Date.from(currentDate))
                 .setExpiration(Date.from(expireDate))
                 .signWith(jwtRefreshSecret , SignatureAlgorithm.HS512)
-                .claim("roles", authentication.getAuthorities())
+                .claim("authorities", authorities)
                 .compact();
 
         return token;
@@ -106,13 +111,48 @@ public class TokenGenerator {
         return false;
     }
 
-    public String getUsernameFromAccessToken(String token){
+    public Claims getClaimsFromToken(String token)
+    {
+        Claims claims = null;
+
+        try
+        {
+            claims = getClaimsFromAccessToken(token);
+        }
+        catch (Exception ex)
+        {
+            claims = getClaimsFromRefreshToken(token);
+        }
+        finally {
+
+            return claims;
+        }
+    }
+
+    public Claims getClaimsFromRefreshToken(String token){
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtRefreshSecret)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims;
+    }
+
+
+    public Claims getClaimsFromAccessToken(String token){
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtAccessSecret)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.getSubject();
+        return claims;
+    }
+
+    public Collection<GrantedAuthority> authorityFromClaims(Claims claims)
+    {
+        List<String> p = claims.get("authorities", List.class);
+
+        return p.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
     }
 
 }

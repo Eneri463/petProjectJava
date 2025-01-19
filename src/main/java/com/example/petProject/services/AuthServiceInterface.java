@@ -7,6 +7,8 @@ public interface AuthServiceInterface {
 
     AuthResponseDTO authenticate(String username, String password);
 
+    AuthResponseDTO refresh();
+
     String getAccessToken(Authentication authentication);
 
     String getRefreshToken(Authentication authentication);

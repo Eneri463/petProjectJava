@@ -3,10 +3,12 @@ package com.example.petProject.controllers;
 import com.example.petProject.dto.AuthResponseDTO;
 import com.example.petProject.dto.LoginDTO;
 import com.example.petProject.dto.RegistrationResponseDTO;
+import com.example.petProject.models.RefreshToken;
 import com.example.petProject.models.Role;
 import com.example.petProject.models.UserEntity;
+import com.example.petProject.services.AuthServiceInterface;
+import com.example.petProject.services.RefreshTokenServiceInterface;
 import com.example.petProject.services.RoleServiceInterface;
-import com.example.petProject.services.impl.AuthService;
 import com.example.petProject.services.impl.CustomUserDetailsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -23,10 +25,11 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/auth")
 public class AuthController {
 
-    AuthService authService;
-    CustomUserDetailsService customUserDetailsService;
-    PasswordEncoder passwordEncoder;
-    RoleServiceInterface roleService;
+    private AuthServiceInterface authService;
+    private CustomUserDetailsService customUserDetailsService;
+    private PasswordEncoder passwordEncoder;
+    private RoleServiceInterface roleService;
+    private RefreshTokenServiceInterface refreshTokenService;
 
     // ------------------------------------------------------------
 
@@ -34,10 +37,17 @@ public class AuthController {
     @GetMapping("login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO)
     {
-        //todo
-        // надо ли сначала проверить, есть ли такой логин
+        UserEntity user = customUserDetailsService.loadUser(loginDTO.getUsername());
+
+        if (user == null)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+        }
 
         AuthResponseDTO tokens = authService.authenticate(loginDTO.getUsername(),loginDTO.getPassword());
+
+        refreshTokenService.delete(user.getId());
+        refreshTokenService.save(new RefreshToken(user.getId(), tokens.getRefreshToken()));
 
         return ResponseEntity.ok(tokens);
     }

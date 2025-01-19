@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class CustomerController {
 
     // ------------------------------------------------------------
 
+    @PreAuthorize("hasAuthority('JWT_ACCESS')")
     @GetMapping("/customers")
     @Valid
     public ResponseEntity<List<Customer>> allCustomers(
@@ -31,12 +33,14 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getAllCustomers(pageNo-1, pageSize));
     }
 
+    @PreAuthorize("hasAuthority('JWT_ACCESS')")
     @GetMapping("/customer/{id}")
     public ResponseEntity<Customer> findCustomerById(@PathVariable Long id)
     {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
+    @PreAuthorize("hasAuthority('JWT_ACCESS')")
     @DeleteMapping("/customer/delete")
     public ResponseEntity<String> deleteCustomer(@RequestParam Long id)
     {
@@ -44,6 +48,7 @@ public class CustomerController {
         return ResponseEntity.ok("The customer has been removed");
     }
 
+    @PreAuthorize("hasAuthority('JWT_ACCESS')")
     @PostMapping("/customer/create")
     public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer)
     {

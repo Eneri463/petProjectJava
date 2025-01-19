@@ -144,7 +144,7 @@ class OrdersControllerTestUnit {
 
     @Test
     @DisplayName("POST /order возвращает HTTP-ответ со статусом 400 BAD REQUEST")
-    void createOrder_ReturnInvalidResponseEntity()
+    void createOrder_ReturnErrorResponseEntity()
     {
         // given
         Long id = 1L;

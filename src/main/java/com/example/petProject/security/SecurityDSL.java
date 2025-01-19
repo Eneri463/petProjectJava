@@ -17,7 +17,6 @@ public class SecurityDSL extends AbstractHttpConfigurer<SecurityDSL, HttpSecurit
     private RefreshFilter refreshFilter;
     private LogoutFilter logoutFilter;
 
-    //todo
     @Override
     public void init(HttpSecurity http) throws Exception {
         var csrfConfigurer = http.getConfigurer(CsrfConfigurer.class);

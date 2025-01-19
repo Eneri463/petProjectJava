@@ -23,6 +23,6 @@ public class Role {
     //todo
     @Column(name = "name")
     @NotNull
-    @Pattern(regexp ="^[[:graph:]А-ЯЕЁа-яеё]{1,20}$")
+    @Pattern(regexp ="^[А-ЯЕЁа-яеёA-Za-z_]{1,20}$")
     private String name;
 }
